@@ -17,9 +17,24 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 # prepare dir
 RUN mkdir /app \
- && mkdir /app/data
-# && mkdir /app/velero-client \
+ && mkdir /app/data \
+ && mkdir /app/velero-client \
 # && mkdir /app/velero-client-binary
+ && mkdir /app/data/seriohub/ \
+ && mkdir /app/data/vmware-tanzu/
+
+RUN curl -sL https://api.github.com/repos/seriohub/velero-ui/tags                       -o /app/data/seriohub/velero-ui-tags.json \
+ && curl -sL https://api.github.com/repos/seriohub/velero-api/tags                      -o /app/data/seriohub/velero-api-tags.json \
+ && curl -sL https://api.github.com/repos/vmware-tanzu/velero/tags                      -o /app/data/vmware-tanzu/velero-tags.json \
+ && curl -sL https://api.github.com/repos/seriohub/velero-helm/tags                     -o /app/data/seriohub/velero-helm-tags.json \
+ && curl -sL https://api.github.com/repos/seriohub/velero-watchdog/tags                 -o /app/data/seriohub/velero-watchdog-tags.json \
+ && curl -sL https://api.github.com/repos/vmware-tanzu/velero/releases/latest           -o /app/data/vmware-tanzu/velero-releases-latest.json \
+ && curl -sL https://raw.githubusercontent.com/seriohub/velero-helm/main/components.txt -o /app/data/components.txt
+
+ADD https://github.com/vmware-tanzu/velero/releases/download/${VELERO_CLI_VERSION}/velero-${VELERO_CLI_VERSION}-linux-amd64.tar.gz	/app/velero-client/velero-${VELERO_CLI_VERSION}-linux-amd64.tar.gz
+ADD https://github.com/vmware-tanzu/velero/releases/download/${VELERO_CLI_VERSION}/velero-${VELERO_CLI_VERSION}-linux-arm.tar.gz	/app/velero-client/velero-${VELERO_CLI_VERSION}-linux-arm.tar.gz
+ADD https://github.com/vmware-tanzu/velero/releases/download/${VELERO_CLI_VERSION}/velero-${VELERO_CLI_VERSION}-linux-arm64.tar.gz	/app/velero-client/velero-${VELERO_CLI_VERSION}-linux-arm64.tar.gz
+
 
 # Set the working directory inside the container
 WORKDIR /app
